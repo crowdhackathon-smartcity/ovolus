@@ -1,3 +1,24 @@
+INSTALL REQUIREMENTS
+--------------------
+
+Install Acquia Dev Desktop from the following link.
+https://dev.acquia.com/downloads
+
+
+INSTALL DETAILS
+---------------
+
+1) Import the folder to the Acquia Dev Desktop App
+2) Create new database in the configuration form
+3) Once imported click on the console icon of this project to open the command line.
+4) Import the Database sql file with the following command
+   drush sql-cli < db.sql
+5) After the Database has been imported you can open the website on your browser
+
+ENJOY!
+
+
+
 
 CONTENTS OF THIS FILE
 ---------------------
