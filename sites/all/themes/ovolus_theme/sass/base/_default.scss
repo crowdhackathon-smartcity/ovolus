@@ -1,0 +1,121 @@
+#admin-menu,
+body.admin-menu.adminimal-menu:before {
+  display: none;
+
+  @include breakpoint($desk) {
+    display: block;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  font-family: $custom_font;
+  font-weight: 300;
+
+  &.cke_editable {
+    padding: 20px;
+  }
+}
+
+ul.menu,
+ul.language-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+  }
+}
+
+.flexslider {
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+.element-invisible {
+  display: none;
+}
+
+
+.fieldset-wrapper {
+  .messages {
+    border-radius: 0;
+    position: relative;
+    padding: 20px 45px 20px 30px;
+    box-shadow: 0 3px 16px 0px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    background: #fff;
+    border: 0;
+    max-width: 600px;
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    z-index: 100;
+
+    .close {
+      position: absolute;
+      top: 17px;
+      right: 15px;
+      display: table;
+      width: auto;
+    }
+  }
+
+  .messages--status {
+    border-top: 5px solid rgba(12, 184, 99, 1);
+  }
+
+  .messages--warning {
+    border-top: 5px solid rgba(255, 186, 0, 1);
+  }
+
+  .messages--error {
+    border-top: 5px solid rgba(218, 68, 41, 1);
+  }
+}
+
+.l-messages {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  z-index: 100;
+
+  .messages {
+    border-radius: 0;
+    position: relative;
+    padding: 20px 45px 20px 30px;
+    box-shadow: 0 3px 16px 0px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    background: #fff;
+    border: 0;
+    max-width: 600px;
+
+    .close {
+      position: absolute;
+      top: 17px;
+      right: 15px;
+      display: table;
+      width: auto;
+    }
+  }
+
+  .messages--status {
+    border-top: 5px solid rgba(12, 184, 99, 1);
+  }
+
+  .messages--warning {
+    border-top: 5px solid rgba(255, 186, 0, 1);
+  }
+
+  .messages--error {
+    border-top: 5px solid rgba(218, 68, 41, 1);
+  }
+}

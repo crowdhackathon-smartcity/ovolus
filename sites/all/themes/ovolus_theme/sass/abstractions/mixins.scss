@@ -1,0 +1,40 @@
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &:-moz-placeholder {@content}
+  &::-moz-placeholder {@content}
+  &:-ms-input-placeholder {@content}
+}
+
+@mixin letter-spacing ($photoshop_number) {
+  letter-spacing: #{$photoshop_number/1000}em;
+}
+
+@mixin container {
+  @include pie-clearfix;
+  @include clearfix;
+
+  margin: 0 auto;
+  width: 320px;
+  padding: 0 5px;
+
+  @include breakpoint($tab) {
+    width: 720px;
+    padding: 0 15px;
+
+    @include breakpoint($desk) {
+      width: 1140px;
+
+      @include breakpoint($wide) {
+        width: 1280px;
+      }
+    }
+  }
+}

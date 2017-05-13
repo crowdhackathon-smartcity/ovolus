@@ -1,0 +1,11 @@
+/*
+  Icon Font: <%= font_name %>
+*/
+
+<%= font_face(path: '../fonts/icons') %>
+
+.font-icon {
+<%= glyph_properties %>
+}
+<% @glyphs.each do |name, value| %>
+.font-icon-<%= name.to_s %> { content: "\<%= value[:codepoint].to_s(16) %>"; }<% end %>

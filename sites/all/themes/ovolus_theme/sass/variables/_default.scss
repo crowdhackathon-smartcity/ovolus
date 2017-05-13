@@ -1,0 +1,38 @@
+// Font variables.
+$custom_font: 'Roboto Slab', serif;
+$custom_font_serif: $custom_font;
+$line-height-base: 1.25;
+$font-size-base: 16px;
+$font-size-large: 20px;
+$font-size-small: 12px;
+$font-size-h1: 30px;
+$font-size-h2: 20px;
+$font-size-h3: 18px;
+$font-size-h4: 16px;
+$font-size-h5: 14px;
+$font-size-h6: 12px;
+$headings-font-weight: 400;
+
+// Other variables
+$border-radius-base: 0;
+$brand-primary: #000;
+$text-color: #000;
+
+// Breakpoint variables.
+$screen-xs: 320px;
+$screen-sm: 720px;
+$screen-md: 1140px;
+$screen-lg: 1310px;
+$mob: $screen-xs $screen-sm;
+$tab: $screen-sm;
+$desk: $screen-md;
+$wide: $screen-lg;
+
+// Grid variables.
+$container-tablet: 720px;
+$container-desktop: 1000px;
+
+
+// Sidebar
+$sidebar_tab: 150px;
+$sidebar_desk: 210px;
