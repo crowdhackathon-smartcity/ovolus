@@ -1,0 +1,8 @@
+.table-rows .form-radios {
+  margin-bottom: 10px !important;
+}
+.table-rows .form-type-radio {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 15px !important;
+}

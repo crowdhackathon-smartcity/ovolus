@@ -1,0 +1,21 @@
+name = CTools API
+description = OOP abstraction layer for CTools plugins
+core = 7.x
+php = 5.5
+
+autoload[plugins][] = CTools
+autoload[includes][] = CTools
+
+dependencies[] = image
+dependencies[] = ctools
+dependencies[] = panels
+dependencies[] = autoload (>= 1.5)
+dependencies[] = managed_file
+dependencies[] = table_element
+
+; Information added by Drupal.org packaging script on 2017-04-18
+version = "7.x-1.0"
+core = "7.x"
+project = "ctools_api"
+datestamp = "1492519452"
+

@@ -1,0 +1,96 @@
+<?php
+
+/**
+ * @file
+ * Procedural service collector.
+ */
+
+define('SERVICE_COLLECTOR_CACHE_BIN', 'cache_service_collector');
+
+/**
+ * Implements hook_flush_caches().
+ */
+function service_collector_flush_caches() {
+  return [SERVICE_COLLECTOR_CACHE_BIN];
+}
+
+/**
+ * Collect data via Drupal API hooks and allow to alter it.
+ *
+ * @param string $id
+ *   An unique ID of implementations to collect. The "hook_$id"
+ *   and "hook_$id_alter" functions will be called. In other words
+ *   the "$id" - is the name of hook.
+ * @param callable $resolver
+ *   Function to validate the implementation. Must throw an exception
+ *   to not place obtained element into the list.
+ * @param bool $allow_alter
+ *   Whether other modules are allowed to alter collected definitions.
+ *
+ * @return array
+ *   An array of collected implementations.
+ *
+ * @code
+ * function MODULE_get_awesome_data() {
+ *   // Will call "hook_awesome_data()" and "hook_awesome_data_alter()".
+ *   return service_collector('awesome_data', function ($name, $item) {
+ *     if (!is_string($item)) {
+ *       throw new \Exception('String expected.');
+ *     }
+ *   });
+ * }
+ * @endcode
+ */
+function service_collector($id, callable $resolver, $allow_alter = TRUE) {
+  $cache_id = __FUNCTION__ . ":$id";
+  $cache = cache_get($cache_id, SERVICE_COLLECTOR_CACHE_BIN);
+  $data = [];
+
+  if (FALSE === $cache || empty($cache->data)) {
+    $validator = function ($name, $item) use (&$data, $resolver, $id) {
+      try {
+        // Copy name of definition to prevent its changing by resolver,
+        // in case when it will handle property by reference. Definition
+        // allowed to be changed by reference.
+        $name_copy = $name;
+        // Throw an exception from resolver to not add the item to the list.
+        $resolver($name_copy, $item);
+        // Validation passed. Add the data.
+        $data[$name] = $item;
+      }
+      catch (\Exception $e) {
+        unset($data[$name]);
+        watchdog_exception($id, $e);
+      }
+    };
+
+    // Collect data.
+    foreach (module_invoke_all($id) as $name => $item) {
+      $validator($name, $item);
+    }
+
+    // Alteration allowed. Do it.
+    if ($allow_alter) {
+      drupal_alter($id, $data);
+
+      // Revalidate data after alteration.
+      foreach ($data as $name => $item) {
+        $validator($name, $item);
+      }
+    }
+
+    cache_set($cache_id, $data, SERVICE_COLLECTOR_CACHE_BIN);
+  }
+  else {
+    $data = $cache->data;
+  }
+
+  return $data;
+}
+
+/**
+ * Clear cache of service collector.
+ */
+function service_collector_cache_clear() {
+  cache_clear_all('*', SERVICE_COLLECTOR_CACHE_BIN, TRUE);
+}

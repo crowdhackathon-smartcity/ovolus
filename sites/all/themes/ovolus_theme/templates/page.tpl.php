@@ -143,7 +143,11 @@ else {
                          Κάντε τους δημότες σας πιο χαρούμενους
                       </h2>
                       <h3>Η λύση πληρωμών και συμολαίων που παρέχει ασφάλεια, οικονομία και ταχύτητα.</h3>
-                      <a href="/user/register" class="sign-up-button">Εγγραφείτε ΔΩΡΕΑΝ</a>
+                      <?php if($logged_in): ?>
+                        <a href="/?q=node/add/payments" class="sign-up-button">Άμεση εξόφληση οφειλής</a>
+                      <?php else: ?>
+                        <a href="/user/register" class="sign-up-button">Εγγραφείτε ΔΩΡΕΑΝ</a>
+                      <?php endif; ?>
                       <a href="#" class="solutions">Δείτε τις λύσεις μας</a>    
                     </div>
                   </div>

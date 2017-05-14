@@ -45,48 +45,12 @@
 ?><!DOCTYPE html>
 <html class="no-js" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>>
 <head>
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-86201462-1', 'auto');
-    ga('send', 'pageview');
-
-  </script>
   <?php print $head; ?>
   <title><?php print $head_title; ?></title>
   <link href="https://fonts.googleapis.com/css?family=Comfortaa&amp;subset=greek" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:400,700,700i&amp;subset=greek" rel="stylesheet">
   <?php print $styles; ?>
   <?php print $scripts; ?>
-  <!-- Hotjar Tracking Code for http://nakasbookhouse.gr -->
-  <!-- <script>
-      (function(h,o,t,j,a,r){
-          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-          h._hjSettings={hjid:400747,hjsv:5};
-          a=o.getElementsByTagName('head')[0];
-          r=o.createElement('script');r.async=1;
-          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-          a.appendChild(r);
-      })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-  </script> -->
-  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async='async'></script>
-    <script>
-      var OneSignal = window.OneSignal || [];
-      OneSignal.push(["init", {
-        appId: "1c7d5ec9-055b-4ec6-80fb-17c78b5939f1",
-        autoRegister: true, /* Set to true to automatically prompt visitors */
-        subdomainName: 'https://nakasbookhouse.onesignal.com',
-        httpPermissionRequest: {
-          enable: true
-        },
-        notifyButton: {
-            enable: true /* Set to false to hide */
-        }
-      }]);
-    </script>
 </head>
 <body<?php print $attributes;?>>
   <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>

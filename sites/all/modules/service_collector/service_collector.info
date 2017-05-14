@@ -1,0 +1,11 @@
+name = Service Collector
+description = Collect services providing by modules in procedural way.
+core = 7.x
+php = 5.5
+
+; Information added by Drupal.org packaging script on 2017-04-18
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "service_collector"
+datestamp = "1492516144"
+

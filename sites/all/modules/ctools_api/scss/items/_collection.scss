@@ -1,0 +1,43 @@
+.table-collection {
+  .form-text,
+  .form-select {
+    width: 100%;
+  }
+}
+.fieldset-collection {
+  border: 0 !important;
+  & > .fieldset-wrapper {
+    padding: 0 !important;
+    & > fieldset {
+      margin-bottom: 15px;
+    }
+  }
+}
+
+table + table {
+  margin-top: 20px;
+}
+
+.tabledrag-changed {
+  display: none;
+}
+.tabledrag-handle {
+  display: block;
+  float: left;
+  width: $dragable-size !important;
+  height: $dragable-size !important;
+  margin: 0 10px 0 0 !important;
+  background: url(http://drupal-test.loc/misc/draggable.png) 0 1px;
+  .handle {
+    display: none;
+  }
+}
+tr.draggable {
+  & > td:first-child {
+    display: flex;
+    align-items: center;
+    & > .form-item {
+      width: 100%;
+    }
+  }
+}

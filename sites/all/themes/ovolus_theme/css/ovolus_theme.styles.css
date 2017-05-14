@@ -8730,4 +8730,31 @@ input[type="radio"]:checked + label:before {
       border-bottom: 15px solid transparent;
       border-left: 26px solid #fff; }
 
+table {
+  width: 100%;
+  border: 0;
+  margin: 40px 0 0; }
+  table tr.even, table tr.odd {
+    background: transparent; }
+  table th, table td {
+    height: 40px;
+    border: 0;
+    padding: 15px 0 15px 20px; }
+  table th {
+    font-size: 16px;
+    border: 0;
+    color: #eb4235;
+    font-weight: 700;
+    background: transparent;
+    border-bottom: 1px solid #eb4235; }
+  table td {
+    font-size: 14px; }
+    table td a {
+      font-size: 16px;
+      color: #333333; }
+      table td a:hover {
+        color: #eb4235; }
+  table tbody tr:nth-child(2n+1) {
+    background: #f0f0f0; }
+
 /*# sourceMappingURL=ovolus_theme.styles.css.map */

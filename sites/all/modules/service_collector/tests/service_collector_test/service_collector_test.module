@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Service Collector Tests.
+ */
+
+/**
+ * Returns collected information.
+ *
+ * @return array
+ *   Collected information.
+ *
+ * @see hook_service_collector_numeric()
+ * @see hook_service_collector_numeric_alter()
+ */
+function service_collector_numeric() {
+  return service_collector(__FUNCTION__, function ($name, $item) {
+    if (!is_numeric($item)) {
+      throw new \InvalidArgumentException('Item is not numeric');
+    }
+  });
+}
+
+/**
+ * Implements hook_service_collector_numeric().
+ */
+function service_collector_test_service_collector_numeric() {
+  $services = [];
+
+  $services['one'] = 1;
+  $services['two'] = 2;
+  $services['three'] = 'three';
+
+  return $services;
+}
+
+/**
+ * Implements hook_service_collector_numeric_alter().
+ */
+function service_collector_test_service_collector_numeric_alter(array &$services) {
+  $services['two'] = 22;
+}

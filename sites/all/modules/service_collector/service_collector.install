@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Installation and updating routines.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function service_collector_schema() {
+  $schema = [];
+
+  $schema[SERVICE_COLLECTOR_CACHE_BIN] = drupal_get_schema_unprocessed('system', 'cache');
+
+  return $schema;
+}
