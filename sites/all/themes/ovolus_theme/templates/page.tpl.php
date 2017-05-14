@@ -148,7 +148,7 @@ else {
                       <?php else: ?>
                         <a href="/user/register" class="sign-up-button">Εγγραφείτε ΔΩΡΕΑΝ</a>
                       <?php endif; ?>
-                      <a href="#" class="solutions">Δείτε τις λύσεις μας</a>    
+                      <a href="/?q=node/7" class="solutions">Δείτε τις λύσεις μας</a>    
                     </div>
                   </div>
                 </div>
@@ -181,9 +181,9 @@ else {
 
       <div class="content-wrapper <?php print $content_class; ?>">
         <?php //print render($title_prefix); ?>
-        <?php //if ($title): ?>
-          <!-- <h1><?php //print $title; ?></h1> -->
-        <?php //endif; ?>
+        <?php if (!$is_front): ?>
+          <h1><?php print $title; ?></h1>
+        <?php endif; ?>
         <?php //print render($title_suffix); ?>
 
         <?php print render($page['help']); ?>
@@ -222,7 +222,7 @@ else {
     <div class="footer-bottom">
       <div class="footer-bottom-inner container">
         <div class="copyrights">© <?php print date('Y'); ?> <?php print $site_name; ?></div>
-        <div class="footer-mazeblock">Site by <a href="http://mazeblock.com" target="_blank">Mazeblock</a></div>
+        <!-- <div class="footer-mazeblock">Site by <a href="http://mazeblock.com" target="_blank">Mazeblock</a></div> -->
       </div>
     </div>
   </footer>
