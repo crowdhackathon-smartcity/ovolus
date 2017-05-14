@@ -1,0 +1,37 @@
+.pinmap-listing {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.pinmap-listing * {
+  font-family: Arial, sans-serif;
+}
+.pinmap-listing li {
+  flex-basis: calc(33% - 10px);
+  border: 2px solid #eee;
+  padding: 8px 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+.pinmap-listing li.active,
+.pinmap-listing li:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .33);
+}
+.pinmap-listing h5 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+}
+.pinmap-listing address {
+  font-style: normal;
+}
+.pinmap-listing p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 19px;
+}

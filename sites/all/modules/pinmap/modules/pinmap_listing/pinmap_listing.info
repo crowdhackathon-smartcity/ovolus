@@ -1,0 +1,13 @@
+name = Pin Map Listing
+description = Listing found content. This module is created mostly for demonstration purposes. Copy it and modify as you wish when customizations needed.
+hidden = TRUE
+core = 7.x
+
+dependencies[] = pinmap
+
+; Information added by Drupal.org packaging script on 2017-04-26
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "pinmap"
+datestamp = "1493177345"
+

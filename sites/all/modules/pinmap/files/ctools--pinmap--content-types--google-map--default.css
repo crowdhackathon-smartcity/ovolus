@@ -1,0 +1,106 @@
+.pin-map-area form {
+  display: table;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.pin-map-area form > * {
+  display: table-cell;
+  vertical-align: middle;
+  height: 30px;
+}
+.pin-map-area form > .input {
+  width: 80%;
+  padding-right: 2%;
+}
+.pin-map-area input,
+.pin-map-area button {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #ccc;
+  margin: 0;
+  outline: 0;
+  padding: 0 5px;
+  font-size: 14px;
+  background: none;
+  line-height: 30px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.pin-map-area input {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  -ms-appearance: textfield;
+  appearance: textfield;
+}
+.pin-map-area button {
+  cursor: pointer;
+  background: #eee;
+}
+.pin-map-area button:hover {
+  background: #e2e2e2;
+}
+
+/**
+ * Location button.
+ */
+.pin-map-area .pinmap-location-button {
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 0;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+  background: #fff;
+  margin-right: 10px;
+  border-radius: 2px;
+}
+.pin-map-area .pinmap-location-button:after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin: 5px;
+  display: block;
+  background: url(https://maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png) -18px no-repeat;
+  background-size: 180px 18px;
+}
+.pin-map-area .pinmap-location-button:hover:after {
+  background-position: 0;
+}
+.pin-map-area .pinmap-location-button.active,
+.pin-map-area .pinmap-location-button.active:after {
+  background-position: -144px 0;
+}
+
+/**
+ * Preloader.
+ */
+.pin-map-area .pinmap-preloader {
+  width: 30px;
+  height: 30px;
+  animation: spin 1s infinite steps(8);
+  background: rgba(0, 0, 0, .3);
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+/**
+ * Message container.
+ */
+.pin-map-area .pinmap-message {
+  color: #fff;
+  padding: 5px;
+  font-size: 14px;
+  background: rgba(255, 0, 0, .66);
+  border-radius: 2px;
+}

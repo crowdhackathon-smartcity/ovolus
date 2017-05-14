@@ -1,0 +1,253 @@
+<?php
+
+/**
+ * @file
+ * Pin Map installation.
+ */
+
+use Drupal\pinmap\CTools\ContentTypes\GoogleMap;
+
+// Module uninstallation process doesn't have the "*.module" file included.
+// @see drupal_uninstall_modules()
+if (!defined('PINMAP_CACHE_SEARCH_BIN')) {
+  module_load_include('module', 'pinmap');
+}
+
+/**
+ * Implements hook_enable().
+ */
+function pinmap_enable() {
+  pinmap_attach_address_field(PINMAP_DEFAULT_CONTENT_TYPE, PINMAP_DEFAULT_FIELD_NAME);
+  pinmap_addressfield_ensure_columns();
+}
+
+/**
+ * Implements hook_schema().
+ */
+function pinmap_schema() {
+  $schema = [];
+
+  $schema[PINMAP_CACHE_SEARCH_BIN] = drupal_get_schema_unprocessed('system', 'cache');
+
+  return $schema;
+}
+
+/**
+ * Implements hook_schema().
+ *
+ * This is the parody of "hook_field_schema_alter()". Further implementation
+ * is done inside of "hook_field_storage_details_alter()". Unfortunately.
+ *
+ * @see pinmap_field_storage_details_alter()
+ */
+function pinmap_schema_alter(array &$schema) {
+  // We have to manually iterate over fields of desired field type and define
+  // additional columns, since other modules aren't allowed to modify schema
+  // of fields.
+  // @see hook_field_schema()
+  foreach (pinmap_addressfield_schema_iterator() as list($table, $field, $column_schema)) {
+    // Note, that "hook_field_schema()" defines "columns" instead of
+    // "fields" and each name of column is non prefixed by field name.
+    $schema[$table]['fields'][$field] = $column_schema;
+  }
+}
+
+/**
+ * Iterate over tables of fields of "addressfield" type.
+ *
+ * @return \Generator
+ *   An array with the following contents:
+ *   - name of table ("data" or "revision");
+ *   - name of column in the table;
+ *   - schema of column.
+ */
+function pinmap_addressfield_schema_iterator() {
+  $columns = pinmap_addressfield_field_schema_columns();
+
+  foreach (field_read_fields(['type' => PINMAP_EXTENDS_FIELD_TYPE]) as $field_name => $field_info) {
+    foreach ($columns as $column => $column_schema) {
+      foreach (['data', 'revision'] as $table_type) {
+        $table = "field_{$table_type}_{$field_name}";
+        $field = "{$field_name}_{$column}";
+
+        yield [$table, $field, $column_schema];
+      }
+    }
+  }
+}
+
+/**
+ * Ensure all tables of "addressfield" fields have new columns.
+ */
+function pinmap_addressfield_ensure_columns() {
+  foreach (pinmap_addressfield_schema_iterator() as list($table, $field, $column_schema)) {
+    if (!db_field_exists($table, $field)) {
+      db_add_field($table, $field, $column_schema);
+    }
+  }
+}
+
+/**
+ * Returns list of "addressfield" fields.
+ *
+ * @return string[]
+ *   List of field's machine names.
+ */
+function pinmap_get_field_names() {
+  $field_names = [];
+
+  foreach (pinmap_get_valid_fields() as $fields) {
+    foreach ($fields as $field_name => $label) {
+      list(, $field_name) = pinmap_parse_destination($field_name);
+      $field_names[$field_name] = $field_name;
+    }
+  }
+
+  return $field_names;
+}
+
+/**
+ * Add new columns to schema of "addressfield".
+ */
+function pinmap_update_7001() {
+  // Create schema.
+  if (!db_table_exists(PINMAP_CACHE_SEARCH_BIN)) {
+    drupal_install_schema('pinmap');
+  }
+
+  pinmap_enable();
+}
+
+/**
+ * Rename old "address" content type by "pinmap_address".
+ */
+function pinmap_update_7002() {
+  db_update('node')
+    ->fields(['type' => PINMAP_DEFAULT_CONTENT_TYPE])
+    ->condition('type', 'address')
+    ->execute();
+}
+
+/**
+ * Reattach addresses to renamed content type.
+ */
+function pinmap_update_7003() {
+  foreach (pinmap_get_field_names() as $field_name) {
+    foreach (['data', 'revision'] as $table_type) {
+      db_update("field_{$table_type}_{$field_name}")
+        ->fields(['bundle' => PINMAP_DEFAULT_CONTENT_TYPE])
+        ->condition('bundle', 'address')
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Update old configurations of panes.
+ */
+function pinmap_update_7004() {
+  $configurations = db_select('panels_pane', 'pp')
+    ->fields('pp', ['pid', 'configuration'])
+    ->condition('subtype', 'PinMap\GoogleMap\ContentType')
+    ->execute()
+    ->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+  foreach (array_map('unserialize', $configurations) as $pid => $configuration) {
+    // Content source.
+    foreach ($configuration['info']['content']['field'] as $key => $value) {
+      // Remove old value.
+      unset($configuration['info']['content']['field'][$key]);
+      list($content_type, $field_name) = pinmap_parse_destination($value);
+
+      if ('address' === $content_type) {
+        $content_type = PINMAP_DEFAULT_CONTENT_TYPE;
+      }
+
+      $configuration['info']['content']['field']["$content_type:$field_name"] = "$content_type:$field_name";
+    }
+
+    // API.
+    $configuration['info'] += ['api' => []];
+    $configuration['info']['api'] += [
+      'key' => '',
+      'libraries' => [
+        'places' => 'places',
+      ],
+    ];
+
+    // Search.
+    $configuration['info']['search'] += [
+      'country' => '',
+      'radius' => 5,
+      'limit' => 30,
+      'geolocation' => 0,
+      'geolocation_title' => 'Find around you',
+    ];
+
+    // Map.
+    $configuration['info']['map'] += [
+      'animation' => isset($configuration['info']['icon']['animation']) ? $configuration['info']['icon']['animation'] : '',
+      'default_styles_enabled' => FALSE,
+    ];
+
+    unset($configuration['info']['map']['radius']);
+
+    unset(
+      // Icon.
+      $configuration['info']['icon'],
+      // Clusterization is no longer available.
+      $configuration['info']['clusterer']
+    );
+
+    db_update('panels_pane')
+      ->fields([
+        'subtype' => GoogleMap::class,
+        'configuration' => serialize($configuration),
+      ])
+      ->condition('pid', $pid)
+      ->execute();
+  }
+}
+
+/**
+ * Reformat old data structure.
+ */
+function pinmap_update_7005() {
+  foreach (pinmap_get_field_names() as $field_name) {
+    $data_column = "{$field_name}_data";
+
+    foreach (['data', 'revision'] as $table_type) {
+      $table = "field_{$table_type}_{$field_name}";
+
+      foreach (db_select($table)->fields($table, ['entity_id', 'revision_id', $data_column])->execute() as $item) {
+        $item->{$data_column} = unserialize($item->{$data_column});
+
+        // No coordinates - skip the row.
+        if (empty($item->{$data_column}['coords'])) {
+          continue;
+        }
+
+        $update = [];
+
+        foreach (array_filter($item->{$data_column}['coords']) as $axis => $value) {
+          if (in_array($axis, ['lat', 'lng'])) {
+            $update["{$field_name}_{$axis}"] = $value;
+          }
+          else {
+            continue 2;
+          }
+        }
+
+        unset($item->{$data_column}['coords']);
+
+        $update[$data_column] = serialize($item->{$data_column});
+
+        db_update($table)
+          ->fields($update)
+          ->condition('entity_id', $item->entity_id)
+          ->condition('revision_id', $item->revision_id)
+          ->execute();
+      }
+    }
+  }
+}

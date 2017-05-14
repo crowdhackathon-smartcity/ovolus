@@ -1,6 +1,6 @@
 (function ($) {
 
-  Drupal.behaviors.mazeblock_themeNavigation = {
+  Drupal.behaviors.ovolus_themeNavigation = {
     attach: function (context, settings) {
       var $context = $(context);
 
@@ -16,12 +16,12 @@
     }
   }
 
-  $(document).bind('mazeblock_theme:appear', function() {
+  $(document).bind('ovolus_theme:appear', function() {
     $('.main-navigation').clone().appendTo('.l-mobile-menu');
   });
 
   // Default behavior.
-  Drupal.behaviors.mazeblock_theme = {
+  Drupal.behaviors.ovolus_theme = {
     attach: function (context, settings) {
       var $context = $(context);
 
@@ -49,7 +49,7 @@
 
       // Replace broken book images
       $('.views-field-field-product-image img').on('error', function() {
-        $(this).attr('src', '/sites/all/themes/mazeblock_theme/images/BookNotPictured.jpg');
+        $(this).attr('src', '/sites/all/themes/ovolus_theme/images/BookNotPictured.jpg');
       });
 
       // Sticky cart on the checkout bage

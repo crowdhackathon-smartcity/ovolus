@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Pin Map Listing.
+ */
+
+/**
+ * Implements hook_pinmap_pane_assets().
+ */
+function pinmap_listing_pinmap_pane_assets($variant) {
+  $assets = [];
+
+  foreach (['js', 'css'] as $asset) {
+    $assets[$asset][] = "assets/$variant.$asset";
+  }
+
+  return $assets;
+}

@@ -1,0 +1,350 @@
+<?php
+
+/**
+ * @file
+ * Pin Map.
+ */
+
+use Drupal\pinmap\Searcher\SearcherInterface;
+use Drupal\pinmap\Searcher\Coordinates;
+use Drupal\pinmap\Searcher\Name;
+
+// Administrative URL for module configuring.
+define('PINMAP_ADMIN_PATH', 'admin/config/services/pinmap');
+// JSON representation of all addresses.
+define('PINMAP_MARKERS_FILE', 'public://pinmap.markers-%s-%s-%s.csv');
+// The name of content type with address field provided by this module.
+define('PINMAP_DEFAULT_CONTENT_TYPE', 'pinmap_address');
+// The name of field that will be attached to default content type.
+define('PINMAP_DEFAULT_FIELD_NAME', 'pinmap_address');
+// Name of subfield to store the state of needing in geocode request.
+define('PINMAP_IGNORE_API_CALL_MARKER', 'pinmap_ignore_api_call');
+// By default API calls aren't ignored.
+define('PINMAP_IGNORE_API_CALL_DEFAULT', FALSE);
+// Migration group.
+define('PINMAP_MIGRATE_KEY', 'pinmap');
+// Cache bin for storing search results.
+define('PINMAP_CACHE_SEARCH_BIN', 'cache_pinmap_search');
+// The type of field which this module modifies.
+define('PINMAP_EXTENDS_FIELD_TYPE', 'addressfield');
+// The widget of field, modified by this module.
+define('PINMAP_EXTENDS_FIELD_WIDGET', 'addressfield_standard');
+
+// Include configured settings.
+require_once 'includes/pinmap.settings.inc';
+// Include auxiliary functionality.
+require_once 'includes/pinmap.common.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function pinmap_menu() {
+  $items = [];
+
+  $items[PINMAP_ADMIN_PATH] = [
+    'file' => 'includes/pinmap.pages.inc',
+    'title' => 'Addresses map',
+    'description' => 'Configure cacheability and geocoding providers.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => ['_pinmap_main_form'],
+    'access arguments' => ['administer pinmap'],
+  ];
+
+  $items['pinmap/search'] = [
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/pinmap.pages.inc',
+    'page callback' => '_pinmap_search',
+    'access arguments' => ['access content'],
+  ];
+
+  foreach (pinmap_operation_titles() as $operation => $title) {
+    $items[PINMAP_ADMIN_PATH . '/' . $operation] = [
+      'type' => MENU_LOCAL_TASK,
+      'file' => "includes/pinmap.{$operation}.pages.inc",
+      'title' => $title,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => ["_pinmap_{$operation}_form", $operation],
+      'access callback' => '_pinmap_operation_accessible',
+      'access arguments' => ["access pinmap {$operation}"],
+    ];
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function pinmap_permission() {
+  $permissions = [];
+
+  $permissions['administer pinmap'] = [
+    'title' => t('Allow to administer Pin Map'),
+  ];
+
+  foreach ([
+    'import' => t('Allow addresses import'),
+    'export' => t('Allow addresses export'),
+  ] as $operation => $title) {
+    $permissions["access pinmap $operation"] = [
+      'title' => $title,
+    ];
+  }
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_node_info().
+ */
+function pinmap_node_info() {
+  $info = [];
+
+  if (!pinmap_default_content_type_disabled()) {
+    $info[PINMAP_DEFAULT_CONTENT_TYPE] = [
+      'name' => t('Pin Map Address'),
+      'base' => PINMAP_DEFAULT_CONTENT_TYPE,
+      'locked' => TRUE,
+      'has_title' => FALSE,
+      'description' => t('Addresses storage'),
+    ];
+  }
+
+  return $info;
+}
+
+/**
+ * Implements hook_pinmap_searchers().
+ */
+function pinmap_pinmap_searchers() {
+  $searchers = [];
+
+  $searchers['coordinates'] = Coordinates::class;
+  $searchers['name'] = Name::class;
+
+  return $searchers;
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function pinmap_flush_caches() {
+  return [PINMAP_CACHE_SEARCH_BIN];
+}
+
+/**
+ * Implements hook_addressfield_default_values_alter().
+ */
+function pinmap_addressfield_default_values_alter(array &$default_values, array $context) {
+  // Non savable temporary value.
+  $default_values[PINMAP_IGNORE_API_CALL_MARKER] = PINMAP_IGNORE_API_CALL_DEFAULT;
+  $default_values += array_fill_keys(array_keys(pinmap_addressfield_field_schema_columns()), 0);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * @see field_ui_field_edit_form()
+ */
+function pinmap_form_field_ui_field_edit_form_alter(array &$form, array $form_state) {
+  if (PINMAP_EXTENDS_FIELD_TYPE === $form['#field']['type']) {
+    $form['#instance']['widget']['settings'] += [
+      // Set default value if form was not being saved yet.
+      // @see pinmap_addressfield_default_values_alter()
+      PINMAP_IGNORE_API_CALL_MARKER => PINMAP_IGNORE_API_CALL_DEFAULT,
+    ];
+
+    $form['instance']['widget']['settings'][PINMAP_IGNORE_API_CALL_MARKER] = [
+      '#type' => 'checkbox',
+      '#title' => t('Do not fetch geocoordinates during saving the entity'),
+      '#weight' => -1,
+      '#default_value' => $form['#instance']['widget']['settings'][PINMAP_IGNORE_API_CALL_MARKER],
+    ];
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function pinmap_field_widget_form_alter(array &$element, array &$form_state, array $context) {
+  if (PINMAP_EXTENDS_FIELD_TYPE === $context['field']['type']) {
+    foreach (array_keys(pinmap_addressfield_field_schema_columns()) as $column) {
+      $element[$column] = [
+        '#type' => 'hidden',
+        '#value' => isset($context['items'][$context['delta']][$column]) ? $context['items'][$context['delta']][$column] : 0,
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_field_storage_details_alter().
+ *
+ * This is the workaround. It is made due to impossibility to alter schemas
+ * of fields.
+ *
+ * @see pinmap_schema_alter()
+ */
+function pinmap_field_storage_details_alter(array &$details, array &$field) {
+  if (!empty($details['sql']) && PINMAP_EXTENDS_FIELD_TYPE === $field['type']) {
+    $new_columns = pinmap_addressfield_field_schema_columns();
+
+    foreach ($details['sql'] as $load_type => $tables) {
+      foreach ($tables as $table => $existing_columns) {
+        foreach ($new_columns as $column => $schema) {
+          $details['sql'][$load_type][$table][$column] = $field['field_name'] . '_' . $column;
+          $field['columns'][$column] = $schema;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_attach_presave().
+ */
+function pinmap_field_attach_presave($entity_type, $entity) {
+  $iterator = pinmap_addressfield_iterator($entity_type, $entity);
+
+  foreach ($iterator as list($item, $original, $field_name, $field_instance)) {
+    if ('node' === $entity_type && empty($entity->title)) {
+      $entity->title = $item['organisation_name'];
+    }
+
+    // Allow to get this value from the outside.
+    if (!isset($item[PINMAP_IGNORE_API_CALL_MARKER])) {
+      // API calls are ignored by settings of the field.
+      if (!empty($field_instance['widget']['settings'][PINMAP_IGNORE_API_CALL_MARKER])) {
+        $item[PINMAP_IGNORE_API_CALL_MARKER] = TRUE;
+      }
+      // Check whether data weren't modified and skip API call if not.
+      elseif (!empty($original)) {
+        $unmodified = TRUE;
+
+        foreach (['thoroughfare', 'postal_code', 'locality', 'country', 'lat', 'lng'] as $column) {
+          // "!empty()" is used to not allow "0" as value for "lat" or "lng".
+          $unmodified &= !empty($item[$column]) && !empty($original[$column]) && $item[$column] == $original[$column];
+        }
+
+        if ($unmodified) {
+          $item[PINMAP_IGNORE_API_CALL_MARKER] = $unmodified;
+        }
+      }
+    }
+
+    $item += [
+      // Marker is not configured from the outside of this function, field
+      // settings ain't forces API calls to be ignored or contents of the
+      // field wasn't changed.
+      PINMAP_IGNORE_API_CALL_MARKER => PINMAP_IGNORE_API_CALL_DEFAULT,
+    ];
+
+    if (!$item[PINMAP_IGNORE_API_CALL_MARKER]) {
+      $address = sprintf(
+        '%s, %s, %s, %s',
+        $item['thoroughfare'],
+        $item['postal_code'],
+        $item['locality'],
+        $item['country']
+      );
+
+      try {
+        $iterator->send(array_merge($item, pinmap_provider($address)->fetch()));
+      }
+      catch (\Exception $e) {
+        watchdog('pinmap', sprintf('"%s" for "%s"', $e->getMessage(), $address));
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_addressfield_field_schema_columns().
+ *
+ * Actually this is not a hook, because maintainers of "addressfield" disagreed
+ * to approve the feature request.
+ *
+ * @link https://www.drupal.org/node/2868147
+ */
+function pinmap_addressfield_field_schema_columns() {
+  $columns = [];
+
+  foreach ([
+    'lat' => 'latitude',
+    'lng' => 'longitude',
+  ] as $column => $label) {
+    $columns[$column] = [
+      'size' => 'big',
+      'type' => 'float',
+      'not null' => FALSE,
+      'description' => "The $label of the location.",
+    ];
+  }
+
+  return $columns;
+}
+
+/**
+ * Iterates address fields of the entity.
+ *
+ * @param string $entity_type
+ *   The type of entity.
+ * @param object $entity
+ *   Entity object.
+ *
+ * @return \Generator
+ *   An array with the following contents:
+ *   - single item of field (after editing);
+ *   - original item of the field (before editing);
+ *   - the name of field items of which are iterates;
+ *   - an instance of the field;
+ *   - bundle of the entity.
+ *   Sending value back to the generator will assume it as new and
+ *   attach it to the entity. This function is designed to be used
+ *   on "field_attach_presave", "field_attach_load" or analogical
+ *   operations.
+ */
+function pinmap_addressfield_iterator($entity_type, $entity) {
+  list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  foreach (field_read_fields(['type' => PINMAP_EXTENDS_FIELD_TYPE]) as $field_name => $field_info) {
+    $field_instance = field_info_instance($entity_type, $field_name, $bundle);
+
+    if (NULL !== $field_instance) {
+      foreach ($entity->{$field_name}[LANGUAGE_NONE] as $delta => $item) {
+        $original = [];
+
+        if (!empty($entity->original->{$field_name}[LANGUAGE_NONE][$delta])) {
+          $original = $entity->original->{$field_name}[LANGUAGE_NONE][$delta];
+        }
+
+        // Parentheses are required on PHP 5.5.
+        $value = (yield [
+          $item,
+          $original,
+          $field_name,
+          $field_instance,
+          $bundle,
+        ]);
+
+        if (NULL !== $value) {
+          $entity->{$field_name}[LANGUAGE_NONE][$delta] = $value;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Returns list of registered searchers.
+ *
+ * @return SearcherInterface[]
+ *   List of registered searchers.
+ */
+function pinmap_searchers() {
+  return service_collector(__FUNCTION__, function ($name, $class) {
+    if (!is_subclass_of($class, SearcherInterface::class, TRUE)) {
+      throw new \InvalidArgumentException(sprintf('Searcher "%s" must implement the "%s" interface', $class, SearcherInterface::class));
+    }
+  });
+}

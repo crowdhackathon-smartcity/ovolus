@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <style type="text/css">
-    <?php print file_get_contents(drupal_get_path('theme', 'mazeblock_theme') . '/css/mazeblock_theme.mail.css'); ?>
+    <?php print file_get_contents(drupal_get_path('theme', 'ovolus_theme') . '/css/ovolus_theme.mail.css'); ?>
   </style>
 </head>
 <body>

@@ -3,25 +3,25 @@
 /**
  * Implements theme_menu_tree().
  */
-function mazeblock_theme_menu_tree__main_menu($variables) {
+function ovolus_theme_menu_tree__main_menu($variables) {
   return '<ul class="menu">' . $variables['tree'] . '</ul>';
 }
 
 /**
  * Implements theme_menu_tree().
  */
-function mazeblock_theme_menu_tree__menu_footer_menu($variables) {
+function ovolus_theme_menu_tree__menu_footer_menu($variables) {
   return '<ul class="menu">' . $variables['tree'] . '</ul>';
 }
 
-function mazeblock_theme_menu_alter(&$items) {
+function ovolus_theme_menu_alter(&$items) {
   $items['taxonomy/term/%taxonomy_term']['page callback'] = 'mazeblock_react_search_taxonomy_term_page';
 }
 
 /**
  * Implements hook_preprocess().
  */
-function mazeblock_theme_preprocess_block(&$variables) {
+function ovolus_theme_preprocess_block(&$variables) {
   if ($variables['block']->delta == 'menu-footer-menu') {
     $main_tree = menu_tree('main-menu');
     $tree = '';
@@ -44,7 +44,7 @@ function mazeblock_theme_preprocess_block(&$variables) {
 /**
  * Implements theme_menu_link().
  */
-function mazeblock_theme_menu_link(array $variables) {
+function ovolus_theme_menu_link(array $variables) {
   $element = $variables['element'];
   $sub_menu = '';
 
@@ -57,12 +57,12 @@ function mazeblock_theme_menu_link(array $variables) {
   }
 
   if ($element['#href'] != '<nolink>') {
-    $element['#localized_optiomazeblock_theme']['html'] = TRUE;
+    $element['#localized_optioovolus_theme']['html'] = TRUE;
     $element['#title'] = '<span>' . $element['#title'] . '</span>';
   }
 
-  if (isset($element['#localized_optiomazeblock_theme']) && is_array($element['#localized_optiomazeblock_theme'])) {
-    $output = l($element['#title'], $element['#href'], $element['#localized_optiomazeblock_theme']);
+  if (isset($element['#localized_optioovolus_theme']) && is_array($element['#localized_optioovolus_theme'])) {
+    $output = l($element['#title'], $element['#href'], $element['#localized_optioovolus_theme']);
   }
   else {
     $output = l($element['#title'], $element['#href'], array('html', TRUE));
@@ -73,7 +73,7 @@ function mazeblock_theme_menu_link(array $variables) {
 /**
  * Implements hook_preprocess_textfield().
  */
-function mazeblock_theme_preprocess_textfield(&$variables) {
+function ovolus_theme_preprocess_textfield(&$variables) {
   if (!empty($variables['element']['#title']) and !isset($variables['element']['#attributes']['placeholder'])) {
     $variables['element']['#attributes']['placeholder'] = $variables['element']['#title'];
   }
@@ -82,7 +82,7 @@ function mazeblock_theme_preprocess_textfield(&$variables) {
 /**
  * Implements theme_status_messages().
  */
-function mazeblock_theme_status_messages($variables) {
+function ovolus_theme_status_messages($variables) {
   $display = $variables['display'];
   $output = '';
 

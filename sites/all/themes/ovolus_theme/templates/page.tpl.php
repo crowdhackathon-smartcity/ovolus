@@ -129,8 +129,8 @@ else {
     </div>
   <?php endif; ?>
 
-  <div class="highlighted-region">
-    <?php if($front_page): ?>
+  <?php if (drupal_is_front_page()): ?>
+    <div class="highlighted-region">
       <div class="l-region l-region--highlighted">
         <div id="block-views-hero-block-block" class="block block--views hero-banner block--views-hero-block-block">
           <div class="block__content">
@@ -139,12 +139,12 @@ else {
                 <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
                   <div class="slide-wrapper with-filter" style="background-image: url(/sites/all/themes/ovolus_theme/images/pexels-photo-380283.jpg)">
                     <div class="slide-content container">
-                      <h2>Κάντε την πόλη σας πιο έξυπνη.<br>
-                         Κάντε τους δημότες σας πιο χαρούμενους.
+                      <h2>Κάντε την πόλη σας πιο έξυπνη<br>
+                         Κάντε τους δημότες σας πιο χαρούμενους
                       </h2>
                       <h3>Η λύση πληρωμών και συμολαίων που παρέχει ασφάλεια, οικονομία και ταχύτητα.</h3>
-                      <a href="/user/register" class="sign-up-button">Sign Up For Free</a>
-                      <a href="#" class="solutions">Explore Our Solutions</a>    
+                      <a href="/user/register" class="sign-up-button">Εγγραφείτε ΔΩΡΕΑΝ</a>
+                      <a href="#" class="solutions">Δείτε τις λύσεις μας</a>    
                     </div>
                   </div>
                 </div>
@@ -153,8 +153,8 @@ else {
           </div>
         </div>
       </div>
-    <?php endif; ?>
-  </div>
+    </div>
+  <?php endif; ?>
 
   <div class="l-main">
     <div class="l-content container">
