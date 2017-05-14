@@ -474,3 +474,50 @@ table {
     }
   }
 }
+
+.not-front.page-node-7 .l-content {
+  .node--page--full p {
+    &:last-child {
+      text-align: center;
+    }
+  }
+}
+.not-front .l-content {
+  margin: 50px auto 80px;
+
+  h1 {
+    font-family: 'Fira Sans Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .node--page--full {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+}
+
+.start-payment,
+.start-contract {
+  display: table;
+  margin: 10px auto;
+  border-radius: 20px;
+  color: $red;
+  border: 2px solid $red;
+  padding: 9px 20px 8px;
+}
+
+.start-contract {
+  margin-top: 60px;
+}
+
+.view-header a {
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 10px;
+  color: $red;
+  border: 2px solid $red;
+  padding: 9px 20px 8px;
+}
