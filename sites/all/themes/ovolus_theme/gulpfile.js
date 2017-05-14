@@ -14,7 +14,7 @@ browserSync.init({
   }
 });
 
-gulp.task('mazeblock_theme:sass', function () {
+gulp.task('ovolus_theme:sass', function () {
   gulp.src('./sass/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass({
@@ -33,8 +33,8 @@ gulp.task('mazeblock_theme:sass', function () {
     .pipe(browserSync.stream({match: '**/*.css'}));
 });
 
-gulp.task('mazeblock_theme:watch', function () {
-  gulp.watch('./sass/**/*.scss', ['mazeblock_theme:sass']);
+gulp.task('ovolus_theme:watch', function () {
+  gulp.watch('./sass/**/*.scss', ['ovolus_theme:sass']);
 });
 
-gulp.task('default', ['mazeblock_theme:sass', 'mazeblock_theme:watch']);
+gulp.task('default', ['ovolus_theme:sass', 'ovolus_theme:watch']);

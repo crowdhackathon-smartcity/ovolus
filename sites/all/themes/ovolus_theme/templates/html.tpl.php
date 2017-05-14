@@ -57,7 +57,8 @@
   </script>
   <?php print $head; ?>
   <title><?php print $head_title; ?></title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400&subset=greek" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:400,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oswald:400" rel="stylesheet">
   <?php print $styles; ?>
   <?php print $scripts; ?>
   <!-- Hotjar Tracking Code for http://nakasbookhouse.gr -->

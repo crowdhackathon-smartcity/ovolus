@@ -1,3 +1,6 @@
+$green: #0d4451;
+$red: #eb4235;
+
 body.mobile-menu-active {
   height: 100%;
   overflow: hidden;
@@ -67,12 +70,28 @@ ul.menu {
     list-style-type: none;
     display: inline-block;
 
+    .active {
+      position: relative;
+
+      &:before {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background: $green;
+        position: absolute;
+        bottom: -10px;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+      }
+    }
+
     a {
       padding: 5px 10px;
-
+      
       &:hover {
         text-decoration: none;
-        color: #0d4451;
+        color: $red;
       }
     }
 

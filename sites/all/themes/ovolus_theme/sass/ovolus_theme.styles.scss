@@ -22,7 +22,7 @@
 // Import components.
 
 $green: #0d4451;
-$grey: #eb4235;
+$red: #eb4235;
 
 ::selection {
   color: #fff;
@@ -82,6 +82,230 @@ $grey: #eb4235;
       width: 33.3%;
       @include breakpoint($desk) {
         width: 25%;
+      }
+    }
+  }
+}
+
+.l-header {
+  @include pie-clearfix;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  border-bottom: 1px solid $red;
+  .front & {
+    border-bottom: 1px solid rgba(235, 68, 56, 0.4);
+  }
+
+  .admin-menu & {
+    top: 29px;
+  }
+
+  .front &:before {
+    content: "";
+    display: block;
+    height: 300px;
+    width: 120%;
+    background-color: transparent;
+    z-index: -1;
+    position: absolute;
+    top: -300px;
+    box-shadow: 0px 0px 230px 55px rgba(0, 0, 0, 0.48);
+    left: -20%;
+  }
+
+  // .header-right {
+  //   float: left;
+  // }
+
+  .l-branding {
+    display: inline-block;
+    float: left;
+
+    .site-logo img {
+      max-width: 180px;
+      height: auto;
+    }
+
+    .site-slogan {
+      display: none;
+    }
+  }
+
+  .branding-menu {
+    font-weight: 300;
+    font-size: 14px;
+
+    a {
+      padding: 5px;
+
+      @include breakpoint($desk) {
+        padding: 5px 10px;
+      }
+    }
+  }
+
+  #mobile-menu {
+    font-size: 0px;
+    padding: 2.5px 0;
+    float: right;
+    text-decoration: none;
+    width: 30px;
+    height: 30px;
+    display: block;
+    position: absolute;
+    top: 47px;
+    right: 20px;
+
+    @include breakpoint($desk) {
+      display: none;
+    }
+
+    .line {
+      display: block;
+      width: 100%;
+      height: 1px;
+      margin-bottom: 8px;
+      background: #000000;
+    }
+  }
+}
+
+
+// Main Menu
+#block-system-main-menu {
+  font-weight: 500;
+  padding: 15px 0 0 70px;
+  font-size: 15px;
+  display: none;
+  float: left;
+
+  .main-navigation & {
+    display: none;
+  }
+
+  @include breakpoint($desk) {
+    display: block;
+
+    .main-navigation & {
+      display: inline-block;
+    }
+  }
+
+  li {
+    padding-left: 15px;
+    padding-right: 15px;
+
+    a {
+      color: $green;
+      font-weight: 400;
+      padding: 0;
+      font-size: 16px;
+      text-shadow: 0 0 100px rgba(0, 0, 0, 0.7);
+
+      .front & {
+        color: #fff;
+      }
+
+      &:hover {
+        color: $red;
+      }
+    }
+
+    &:first-child {
+      a {
+        padding-left: 0;
+      }
+    }
+  }
+}
+
+#block-system-user-menu,
+#block-system-main-menu {
+  padding: 50px 35px 0;
+  clear: both;
+  display: block;
+
+  .block__title {
+    display: none;
+  }
+
+  ul.menu {
+    li {
+      line-height: 40px;
+      margin: 0;
+      width: 100%;
+
+      a {
+        font-size: 15px;
+        padding: 5px 30px 5px 0;
+      }
+
+      ul {
+        display: none;
+      }
+    }
+  }
+}
+
+#block-system-user-menu {
+  a {
+    font-size: 15px;
+    padding: 5px 30px 5px 0;
+    font-weight: 500;
+    color: $green;
+  }
+}
+
+
+.user-menu {
+  display: none;
+
+  @include breakpoint($desk) {
+    display: inline-block;
+    float: right;
+    margin-top: 10px;
+
+    ul.menu {
+      padding: 0;
+      margin: 0;
+      li {
+        list-style: none;
+        list-style-image: none;
+        width: 100%;
+        a {
+          font-size: 13px;
+          color: $green;
+          font-weight: bold;
+          border-radius: 25px;
+          padding: 8px 20px 9px;
+          display: block;
+          border: 1px solid $green;
+          box-shadow: 0 0 0 1px $green, 0 0 0 1px $green;
+
+          &:hover {
+            text-decoration: none;
+            color: $red;
+            border: 1px solid $red;
+            box-shadow: 0 0 0 1px $red, 0 0 0 1px $red;
+          }
+
+          .front & {
+            color: #fff;
+            border: 1px solid #fff;
+            box-shadow: 0 0 0 1px #fff, 0 0 0 1px #fff;
+
+            &:hover {
+              text-decoration: none;
+              color: $red;
+              border: 1px solid $red;
+              box-shadow: 0 0 0 1px $red, 0 0 0 1px $red;
+            }
+          }
+        }
       }
     }
   }
