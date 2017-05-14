@@ -8537,9 +8537,6 @@ input[type="radio"]:checked + label:before {
 
 .l-header {
   *zoom: 1;
-  position: absolute;
-  top: 0;
-  z-index: 100;
   width: 100%;
   padding: 15px 0;
   text-align: center;
@@ -8549,6 +8546,9 @@ input[type="radio"]:checked + label:before {
     display: table;
     clear: both; }
   .front .l-header {
+    position: absolute;
+    top: 0;
+    z-index: 100;
     border-bottom: 1px solid rgba(235, 68, 56, 0.4); }
   .admin-menu .l-header {
     top: 29px; }
@@ -8629,33 +8629,6 @@ input[type="radio"]:checked + label:before {
     #block-system-main-menu li:first-child a {
       padding-left: 0; }
 
-#block-system-user-menu,
-#block-system-main-menu {
-  padding: 50px 35px 0;
-  clear: both;
-  display: block; }
-  #block-system-user-menu .block__title,
-  #block-system-main-menu .block__title {
-    display: none; }
-  #block-system-user-menu ul.menu li,
-  #block-system-main-menu ul.menu li {
-    line-height: 40px;
-    margin: 0;
-    width: 100%; }
-    #block-system-user-menu ul.menu li a,
-    #block-system-main-menu ul.menu li a {
-      font-size: 15px;
-      padding: 5px 30px 5px 0; }
-    #block-system-user-menu ul.menu li ul,
-    #block-system-main-menu ul.menu li ul {
-      display: none; }
-
-#block-system-user-menu a {
-  font-size: 15px;
-  padding: 5px 30px 5px 0;
-  font-weight: 500;
-  color: #0d4451; }
-
 .user-menu {
   display: none; }
   @media (min-width: 1140px) {
@@ -8669,7 +8642,11 @@ input[type="radio"]:checked + label:before {
         .user-menu ul.menu li {
           list-style: none;
           list-style-image: none;
-          width: 100%; }
+          width: 100%;
+          float: left;
+          display: inline-block;
+          width: auto;
+          margin-right: 10px; }
           .user-menu ul.menu li a {
             font-size: 13px;
             color: #0d4451;
@@ -8693,5 +8670,75 @@ input[type="radio"]:checked + label:before {
                 color: #eb4235;
                 border: 1px solid #eb4235;
                 box-shadow: 0 0 0 1px #eb4235, 0 0 0 1px #eb4235; } }
+
+.hero-banner .slide-wrapper {
+  min-height: 600px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #fff; }
+  .hero-banner .slide-wrapper h2 {
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    text-transform: uppercase;
+    margin-top: 40px;
+    font-size: 36px;
+    line-height: 44px;
+    margin-bottom: 20px;
+    text-align: center; }
+    @media (min-width: 720px) {
+      .hero-banner .slide-wrapper h2 {
+        margin-top: 220px; } }
+  .hero-banner .slide-wrapper h2,
+  .hero-banner .slide-wrapper h3 {
+    text-shadow: 0 0 100px rgba(0, 0, 0, 0.7); }
+  .hero-banner .slide-wrapper h3 {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 30px; }
+  .hero-banner .slide-wrapper a {
+    border: 1px solid #eb4235;
+    color: #fff;
+    background: #eb4235;
+    margin: 10px auto 0;
+    border-radius: 25px;
+    display: table;
+    font-size: 15px;
+    min-width: 300px;
+    text-align: center;
+    padding: 12px 30px 13px;
+    font-weight: bold; }
+    .hero-banner .slide-wrapper a:hover, .hero-banner .slide-wrapper a.solutions {
+      background: transparent;
+      color: #eb4235;
+      text-decoration: none; }
+    .hero-banner .slide-wrapper a.solutions:hover {
+      background: #eb4235;
+      color: #fff; }
+  .hero-banner .slide-wrapper .video-button {
+    width: 63px;
+    height: 63px;
+    border-radius: 50%;
+    background: #eb4235;
+    display: block;
+    font-size: 0;
+    color: transparent;
+    position: relative;
+    box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.35); }
+    .hero-banner .slide-wrapper .video-button:hover {
+      background: #0d4451; }
+    .hero-banner .slide-wrapper .video-button:before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: 17px;
+      left: 21px;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 26px solid #fff; }
 
 /*# sourceMappingURL=ovolus_theme.styles.css.map */
